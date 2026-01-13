@@ -362,7 +362,7 @@ BEGIN
     FROM provincias
     ORDER BY nom_provincia;
 END;
-
+GO
 
 
 IF OBJECT_ID('dbo.sp_insert_click_contenido', 'P') IS NOT NULL
