@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.ClicksContenidosRestaurantesBean;
+import ar.edu.ubp.das.la_bella_pizza_backend.beans.ContenidoNoPublicadoBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.repositories.LaBellaPizzaRepository;
 
 @RestController
@@ -24,6 +25,12 @@ public class LaBellaPizzaResource {
   public ResponseEntity<String> registrarClickContenido(@RequestBody ClicksContenidosRestaurantesBean body) {
     laBellaPizzaRepository.registrarClickContenido(body);
     return ResponseEntity.ok("ok");
+  }
+
+  @GetMapping("/contenidos/no-publicados")
+  public ResponseEntity<List<ContenidoNoPublicadoBean>> getContenidosNoPublicados() {
+    return ResponseEntity.ok(
+        laBellaPizzaRepository.getContenidosNoPublicados());
   }
 
 }
