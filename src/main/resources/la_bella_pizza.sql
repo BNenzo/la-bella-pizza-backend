@@ -411,4 +411,22 @@ END;
 GO
 
 
-SELECT * from clicks_contenidos;
+
+-- OBTENER CONTENIDOS NO PUBLICADOS
+CREATE OR ALTER PROCEDURE sp_get_contenidos_no_publicados
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        nro_restaurante,
+        nro_contenido,
+        contenido_a_publicar,
+        imagen_a_publicar,
+        publicado,
+        costo_click,
+        nro_sucursal
+    FROM contenidos
+    WHERE publicado = 0;
+END
+GO
