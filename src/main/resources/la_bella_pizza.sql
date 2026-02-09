@@ -430,6 +430,92 @@ END
 GO
 
 
+-- INSERT CLIENTE DESDE RISTORINO SOLO SI NO EXISTE
+CREATE OR ALTER PROCEDURE sp_insert_cliente_desde_ristorino
+  @nro_cliente INT,
+  @apellido VARCHAR(100),
+  @nombre VARCHAR(100),
+  @correo VARCHAR(150),
+  @telefonos VARCHAR(50)
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM clientes
+    WHERE nro_cliente = @nro_cliente
+  )
+  BEGIN
+    INSERT INTO clientes (
+      nro_cliente,
+      apellido,
+      nombre,
+      correo,
+      telefonos
+    )
+    VALUES (
+      @nro_cliente,
+      @apellido,
+      @nombre,
+      @correo,
+      @telefonos
+    );
+  END
+END;
+GO
+
+
+-- INSERT DE UN TURNO
+CREATE OR ALTER PROCEDURE sp_crear_reserva_sucursal
+  @cod_reserva VARCHAR(50),
+  @nro_cliente INT,
+  @fecha_reserva DATE,
+  @nro_restaurante INT,
+  @nro_sucursal INT,
+  @cod_zona CHAR(5),
+  @hora_reserva TIME,
+  @cant_adultos INT,
+  @cant_menores INT,
+  @costo_reserva DECIMAL(10,2)
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  INSERT INTO reservas_sucursales (
+    cod_reserva,
+    fecha_hora_registro,
+    nro_cliente,
+    fecha_reserva,
+    nro_restaurante,
+    nro_sucursal,
+    cod_zona,
+    hora_reserva,
+    cant_adultos,
+    cant_menores,
+    costo_reserva,
+    cancelada,
+    fecha_cancelacion
+  )
+  VALUES (
+    @cod_reserva,
+    CURRENT_TIMESTAMP,
+    @nro_cliente,
+    @fecha_reserva,
+    @nro_restaurante,
+    @nro_sucursal,
+    @cod_zona,
+    @hora_reserva,
+    @cant_adultos,
+    @cant_menores,
+    @costo_reserva,
+    0,
+    NULL
+  );
+END;
+GO
+
+
 -- ACTUALIZAR LA RESERVA DE UN CLIENTE
 CREATE OR ALTER PROCEDURE dbo.sp_actualizar_reserva_cliente
     @cod_reserva   VARCHAR(50),
@@ -468,6 +554,5 @@ BEGIN
     END CATCH
 END;
 GO
-
 
 

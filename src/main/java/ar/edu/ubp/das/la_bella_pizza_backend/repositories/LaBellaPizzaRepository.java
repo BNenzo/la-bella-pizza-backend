@@ -1,5 +1,8 @@
 package ar.edu.ubp.das.la_bella_pizza_backend.repositories;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,9 @@ public class LaBellaPizzaRepository {
   @Autowired
   private SimpleJdbcCallFactory jdbcCallFactory;
 
+  // ===============================
+  // REGISTRAR CLICK CONTENIDO
+  // ===============================
   public void registrarClickContenido(ClicksContenidosRestaurantesBean body) {
     MapSqlParameterSource p = new MapSqlParameterSource()
         .addValue("nro_restaurante", body.getNroRestaurante())
@@ -29,7 +35,9 @@ public class LaBellaPizzaRepository {
     jdbcCallFactory.executeWithOutputs("sp_insert_click_contenido", "dbo", p);
   }
 
+  // ===============================
   // OBTENER CONTENIDOS NO PUBLICADOS
+  // ===============================
   public List<ContenidoNoPublicadoBean> getContenidosNoPublicados() {
     MapSqlParameterSource p = new MapSqlParameterSource();
 
@@ -39,6 +47,62 @@ public class LaBellaPizzaRepository {
         p,
         "contenidos_no_publicados",
         ContenidoNoPublicadoBean.class);
+  }
+
+  // ===============================
+  // INSERT CLIENTE DESDE RISTORINO
+  // ===============================
+  public void insertarClienteDesdeRistorino(
+      Integer nroCliente,
+      String apellido,
+      String nombre,
+      String correo,
+      String telefonos) {
+
+    MapSqlParameterSource p = new MapSqlParameterSource()
+        .addValue("nro_cliente", nroCliente)
+        .addValue("apellido", apellido)
+        .addValue("nombre", nombre)
+        .addValue("correo", correo)
+        .addValue("telefonos", telefonos);
+
+    jdbcCallFactory.execute(
+        "sp_insert_cliente_desde_ristorino",
+        "dbo",
+        p);
+  }
+
+  // ===============================
+  // INSERT RESERVA DESDE RISTORINO
+  // ===============================
+  public void crearReservaSucursal(
+      String codReserva,
+      Integer nroCliente,
+      LocalDate fechaReserva,
+      Integer nroRestaurante,
+      Integer nroSucursal,
+      String codZona,
+      LocalTime horaReserva,
+      Integer cantAdultos,
+      Integer cantMenores,
+      Double costoReserva) {
+
+    MapSqlParameterSource p = new MapSqlParameterSource()
+        .addValue("cod_reserva", codReserva)
+        .addValue("nro_cliente", nroCliente)
+        .addValue("fecha_reserva", fechaReserva)
+        .addValue("nro_restaurante", nroRestaurante)
+        .addValue("nro_sucursal", nroSucursal)
+        .addValue("cod_zona", codZona)
+        .addValue("hora_reserva", horaReserva)
+        .addValue("cant_adultos", cantAdultos)
+        .addValue("cant_menores", cantMenores)
+        .addValue("costo_reserva", costoReserva);
+
+    jdbcCallFactory.execute(
+        "sp_crear_reserva_sucursal",
+        "dbo",
+        p);
   }
 
   // ACTUALIZAR LA RESERVA DE UN CLIENTE
