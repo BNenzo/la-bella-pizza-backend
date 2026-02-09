@@ -516,7 +516,43 @@ END;
 GO
 
 
+-- ACTUALIZAR LA RESERVA DE UN CLIENTE
+CREATE OR ALTER PROCEDURE dbo.sp_actualizar_reserva_cliente
+    @cod_reserva   VARCHAR(50),
+    @fecha_reserva DATE,
+    @hora_reserva  TIME,
+    @cant_adultos  INT,
+    @fecha_cancelacion DATE,
+    @cancelada INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-SELECT *
-FROM reservas_sucursales;
+    BEGIN TRY
+        BEGIN TRAN;
+
+        -- Actualización
+        UPDATE rs
+        SET
+            rs.fecha_reserva = COALESCE(@fecha_reserva, rs.fecha_reserva),
+            rs.hora_reserva  = COALESCE(@hora_reserva, rs.hora_reserva),
+            rs.cant_adultos  = COALESCE(@cant_adultos, rs.cant_adultos),
+            rs.fecha_cancelacion  = COALESCE(@fecha_cancelacion, rs.fecha_cancelacion),
+            rs.cancelada  = COALESCE(@cancelada, rs.cancelada)
+        FROM dbo.reservas_sucursales AS rs
+        WHERE cod_reserva = @cod_reserva;
+
+        -- Si no existe la reserva
+        IF @@ROWCOUNT = 0
+            THROW 50002, 'No existe una reserva con ese cod_reserva.', 1;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() <> 0 ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
 
