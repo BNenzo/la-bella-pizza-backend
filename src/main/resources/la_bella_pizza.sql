@@ -215,7 +215,7 @@ CREATE TABLE reservas_sucursales (
 );
 
 INSERT INTO reservas_sucursales VALUES
-('LBP-001-R001','2025-11-02 18:30:00',1,'2025-11-05',1,1,'ACBA','12:00',2,0,12000.00,0,NULL),
+-- ('LBP-001-R001','2025-11-02 18:30:00',1,'2025-11-05',1,1,'ACBA','12:00',2,0,12000.00,0,NULL),
 ('LBP-001-R002','2025-11-02 18:45:00',2,'2025-11-05',1,1,'ACBA','20:00',4,2,18000.00,0,NULL);
 
 CREATE TABLE estilos (
@@ -556,3 +556,6 @@ END;
 GO
 
 
+
+SELECT * from reservas_sucursales
+select * from clientes
