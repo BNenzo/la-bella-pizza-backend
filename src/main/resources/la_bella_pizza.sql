@@ -100,7 +100,7 @@ CREATE TABLE sucursales (
 
 INSERT INTO sucursales VALUES
 (1,1,'La Bella Pizza Alta Córdoba','Juan Antonio Lavalleja',2344,'Alta Córdoba',1,'5001','03512317731',50,15,2),
-(1,2,'La Bella Pizza General Paz','Jacinto Ríos',170,'General Paz',1,'5004','03515388931',30,12,3);
+(1,2,'La Bella Pizza General Paz','Jacinto Ríos',170,'General Paz',1,'5004','03515388931',30,12,2);
 
 CREATE TABLE zonas (
     cod_zona CHAR(5) PRIMARY KEY,
@@ -158,11 +158,16 @@ CREATE TABLE turnos_sucursales (
         REFERENCES sucursales (nro_restaurante, nro_sucursal)
 );
 
+
 INSERT INTO turnos_sucursales VALUES
-(1,1,'12:00','13:30',1),(1,1,'20:00','21:30',1),
-(1,1,'13:30','14:30',1),(1,1,'21:30','22:30',1),
-(1,1,'14:30','15:30',1),(1,1,'22:30','23:30',1),
-(1,2,'12:00','13:15',1),(1,2,'20:00','21:00',0);
+(1,1,'12:00','13:30',1),
+(1,1,'13:30','14:30',1),
+(1,1,'14:30','15:30',1),
+(1,1,'20:00','21:30',1),
+(1,1,'21:30','22:30',1),
+(1,1,'22:30','23:30',1),
+(1,2,'12:00','13:15',1),
+(1,2,'20:00','21:00',0);
 
 CREATE TABLE zonas_turnos_sucursales (
     nro_restaurante INT NOT NULL,
@@ -214,9 +219,9 @@ CREATE TABLE reservas_sucursales (
         REFERENCES zonas_turnos_sucursales (nro_restaurante, nro_sucursal, cod_zona, hora_desde)
 );
 
-INSERT INTO reservas_sucursales VALUES
+-- INSERT INTO reservas_sucursales VALUES
 -- ('LBP-001-R001','2025-11-02 18:30:00',1,'2025-11-05',1,1,'ACBA','12:00',2,0,12000.00,0,NULL),
-('LBP-001-R002','2025-11-02 18:45:00',2,'2025-11-05',1,1,'ACBA','20:00',4,2,18000.00,0,NULL);
+-- ('LBP-001-R002','2025-11-02 18:45:00',2,'2025-11-05',1,1,'ACBA','20:00',4,2,18000.00,0,NULL);
 
 CREATE TABLE estilos (
     nro_estilo INT PRIMARY KEY,
@@ -249,7 +254,7 @@ CREATE TABLE estilos_sucursales (
 );
 
 INSERT INTO estilos_sucursales VALUES
-(1,1,2,1),(1,1,3,1),(1,2,2,1),(1,2,3,0);
+(1,1,2,1),(1,1,3,1),(1,2,2,1),(1,2,3,1);
 
 CREATE TABLE tipos_comidas (
     nro_tipo_comida INT PRIMARY KEY,
@@ -314,7 +319,7 @@ CREATE TABLE especialidades_alimentarias_sucursales (
 );
 
 INSERT INTO especialidades_alimentarias_sucursales VALUES
-(1,1,1,1),(1,1,2,1),(1,2,1,1),(1,2,2,1);
+(1,1,1,1),(1,1,3,1),(1,2,1,1),(1,2,3,1);
 
 CREATE TABLE contenidos (
     nro_restaurante INT NOT NULL,
@@ -331,8 +336,8 @@ CREATE TABLE contenidos (
 );
 
 INSERT INTO contenidos VALUES
-(1,1,'Promo mediodía: Pizza a la piedra + bebida','https://tn.com.ar/resizer/z2Dke2M5Hbz4s3VRE_OClr_-fXU=/arc-anglerfish-arc2-prod-artear/public/FOTWE3GMANB6BPQKQB4GER55MM.jpeg',1,15.00,1),
-(1,2,'Noche de pizzas a la piedra 2x1','https://www.paulinacocina.net/wp-content/uploads/2024/05/receta-de-pizza-frita-paulina-cocina-recetas-800x450.jpg',1,12.50,1),
+(1,1,'Promo mediodía: Pizza a la piedra + bebida','https://tn.com.ar/resizer/z2Dke2M5Hbz4s3VRE_OClr_-fXU=/arc-anglerfish-arc2-prod-artear/public/FOTWE3GMANB6BPQKQB4GER55MM.jpeg',0,15.00,1),
+(1,2,'Noche de pizzas a la piedra 2x1','https://www.paulinacocina.net/wp-content/uploads/2024/05/receta-de-pizza-frita-paulina-cocina-recetas-800x450.jpg',0,12.50,1),
 (1,3,'Degustacion de pizzas en sucursal Alta Cba','https://external-preview.redd.it/dominos-50-off-pizza-deal-returns-april-21-27-2025-v0-fmRa26hiSj0oi3Ob8jddYxIJCAft4z0H26lGC1J9KvE.jpg?width=640&crop=smart&auto=webp&s=34ace06ed3c90f079c718796a0ce7496ea4f5f32',0,10.00,2);
 
 CREATE TABLE clicks_contenidos (
