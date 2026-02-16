@@ -3,6 +3,7 @@ package ar.edu.ubp.das.la_bella_pizza_backend.resources;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import ar.edu.ubp.das.la_bella_pizza_backend.beans.ActualizarContenidosNoPublicadosBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.ActualizarReservaClienteRequestBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.ClicksContenidosRestaurantesBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.ContenidoNoPublicadoBean;
@@ -77,6 +81,14 @@ public class LaBellaPizzaResource {
 
     laBellaPizzaRepository.actualizarReservaCliente(body);
     return ResponseEntity.ok("ok");
+  }
+
+  // ACTUALIZAR LOS CONTENIDOS NO PUBLICADOS A PUBLICADOS
+  @PostMapping("/contenidos/actualizar-publicados")
+  public ResponseEntity<String> actualizarContenidoPublicado(
+      @RequestBody ActualizarContenidosNoPublicadosBean body) throws JsonProcessingException {
+    laBellaPizzaRepository.actualizarContenidoNoPublicadosAPublicados(body);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
 }

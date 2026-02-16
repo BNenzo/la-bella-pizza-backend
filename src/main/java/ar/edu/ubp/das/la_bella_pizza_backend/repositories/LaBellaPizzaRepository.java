@@ -1,7 +1,6 @@
 package ar.edu.ubp.das.la_bella_pizza_backend.repositories;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -9,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ar.edu.ubp.das.la_bella_pizza_backend.beans.ActualizarContenidosNoPublicadosBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.ActualizarReservaClienteRequestBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.ClicksContenidosRestaurantesBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.ContenidoNoPublicadoBean;
@@ -122,4 +124,18 @@ public class LaBellaPizzaRepository {
         params);
   }
 
+  // ACTUALIZAR LOS CONTENIDOS NO PUBLICADOS A PUBLICADOS
+  public void actualizarContenidoNoPublicadosAPublicados(ActualizarContenidosNoPublicadosBean request)
+      throws JsonProcessingException {
+    ObjectMapper om = new ObjectMapper();
+    String json = om.writeValueAsString(request.getContenidos());
+
+    MapSqlParameterSource params = new MapSqlParameterSource()
+        .addValue("json", json);
+
+    jdbcCallFactory.executeWithOutputs(
+        "sp_actualizar_contenido_no_publicado",
+        "dbo",
+        params);
+  }
 }
