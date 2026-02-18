@@ -585,15 +585,19 @@ BEGIN
   ;WITH items AS (
     SELECT
       nroRestaurante,
-      nroContenido
+      nroContenido,
+      costoClick
     FROM OPENJSON(@json)
     WITH (
       nroRestaurante INT '$.nroRestaurante',
-      nroContenido   INT '$.nroContenido'
+      nroContenido   INT '$.nroContenido',
+      costoClick     DECIMAL(10,2) '$.costoClick'
     )
   )
   UPDATE c
-     SET c.publicado = 1
+     SET 
+        c.publicado = 1,
+        c.costo_click = COALESCE(i.costoClick, c.costo_click)
   FROM dbo.contenidos c
   INNER JOIN items i
     ON 1 = c.nro_restaurante
