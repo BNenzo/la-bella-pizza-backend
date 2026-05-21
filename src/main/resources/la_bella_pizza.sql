@@ -103,39 +103,20 @@ INSERT INTO sucursales VALUES
 (1,2,'La Bella Pizza General Paz','Jacinto Ríos',170,'General Paz',1,'5004','03515388931',30,12,2);
 
 CREATE TABLE zonas (
-    cod_zona CHAR(5) PRIMARY KEY,
+    cod_zona CHAR(15) PRIMARY KEY,
     nom_zona VARCHAR(100) NOT NULL
 );
 
 INSERT INTO zonas (cod_zona, nom_zona) VALUES
-('CTR','Centro'),
-('NCBA','Nueva Córdoba'),
-('ACBA','Alta Córdoba'),
-('GPZ','General Paz'),
-('CDLR','Cerro de las Rosas'),
-('VBEL','Villa Belgrano'),
-('JUNI','Jardín'),
-('URCA','Urca'),
-('SANV','San Vicente'),
-('OBLA','Observatorio'),
-('ARGU','Argüello'),
-('MAIP','Maipú'),
-('POET','Poeta Lugones'),
-('RSME','Residencial San Martín'),
-('IPON','Iponá'),
-('GUIZ','Guiñazú'),
-('PATR','Patricios'),
-('VILL','Villa Cabrera'),
-('VILLP','Villa Páez'),
-('SAGU','San Gerónimo'),
-('LOSGL','Los Gigantes'),
-('BAJO','Bajo Alberdi');
+('barra','Barra'),
+('salon','Salon'),
+('patio','Patio');
 
 
 CREATE TABLE zonas_sucursales (
     nro_restaurante INT NOT NULL,
     nro_sucursal INT NOT NULL,
-    cod_zona CHAR(5) NOT NULL,
+    cod_zona CHAR(15) NOT NULL,
     cant_comensales INT NOT NULL,
     permite_menores INT NOT NULL,
     habilitada INT NOT NULL,
@@ -145,7 +126,15 @@ CREATE TABLE zonas_sucursales (
     FOREIGN KEY (cod_zona) REFERENCES zonas (cod_zona)
 );
 
-INSERT INTO zonas_sucursales VALUES (1,1,'ACBA',50,1,1),(1,2,'GPZ',30,1,1);
+
+INSERT INTO zonas_sucursales VALUES 
+(1,1,'barra',10,0,1),
+(1,1,'salon',20,1,1),
+(1,1,'patio',20,1,1),
+
+(1,2,'barra',10,0,1),
+(1,2,'salon',10,1,1),
+(1,2,'patio',10,1,1);
 
 CREATE TABLE turnos_sucursales (
     nro_restaurante INT NOT NULL,
@@ -160,19 +149,20 @@ CREATE TABLE turnos_sucursales (
 
 
 INSERT INTO turnos_sucursales VALUES
-(1,1,'12:00','13:30',1),
-(1,1,'13:30','14:30',1),
-(1,1,'14:30','15:30',1),
-(1,1,'20:00','21:30',1),
-(1,1,'21:30','22:30',1),
-(1,1,'22:30','23:30',1),
-(1,2,'12:00','13:15',1),
+(1,1,'12:00','13:00',1),
+(1,1,'13:00','14:00',1),
+(1,1,'15:00','16:00',1),
+(1,1,'20:00','21:00',1),
+(1,1,'21:00','22:00',1),
+(1,1,'22:00','23:00',1),
+
+(1,2,'12:00','13:00',1),
 (1,2,'20:00','21:00',0);
 
 CREATE TABLE zonas_turnos_sucursales (
     nro_restaurante INT NOT NULL,
     nro_sucursal INT NOT NULL,
-    cod_zona CHAR(5) NOT NULL,
+    cod_zona CHAR(15) NOT NULL,
     hora_desde TIME NOT NULL,
     permite_menores INT NOT NULL DEFAULT 1,
     PRIMARY KEY (nro_restaurante, nro_sucursal, cod_zona, hora_desde),
@@ -182,14 +172,35 @@ CREATE TABLE zonas_turnos_sucursales (
 );
 
 INSERT INTO zonas_turnos_sucursales VALUES
-(1,1,'ACBA','12:00',1),
-(1,1,'ACBA','13:30',1),
-(1,1,'ACBA','14:30',1),
-(1,1,'ACBA','20:00',1),
-(1,1,'ACBA','21:30',1),
-(1,1,'ACBA','22:30',1),
-(1,2,'GPZ','12:00',1),
-(1,2,'GPZ','20:00',1);
+(1,1,'barra','12:00',0),
+(1,1,'barra','13:00',0),
+(1,1,'barra','15:00',0),
+(1,1,'barra','20:00',0),
+(1,1,'barra','21:00',0),
+(1,1,'barra','22:00',0),
+
+(1,1,'salon','12:00',1),
+(1,1,'salon','13:00',1),
+(1,1,'salon','15:00',1),
+(1,1,'salon','20:00',1),
+(1,1,'salon','21:00',1),
+(1,1,'salon','22:00',1),
+
+(1,1,'patio','12:00',1),
+(1,1,'patio','13:00',1),
+(1,1,'patio','15:00',1),
+(1,1,'patio','20:00',1),
+(1,1,'patio','21:00',1),
+(1,1,'patio','22:00',1),
+
+(1,2,'barra','12:00',0),
+(1,2,'barra','20:00',0),
+
+(1,2,'salon','12:00',1),
+(1,2,'salon','20:00',1),
+
+(1,2,'patio','12:00',1),
+(1,2,'patio','20:00',1);
 
 
 CREATE TABLE clientes (
@@ -201,11 +212,7 @@ CREATE TABLE clientes (
 );
 
 INSERT INTO clientes VALUES
-(1,'Letona','Renzo','renzo.letona@example.com','351-1112233'),
-(2,'Gómez','María','maria.gomez@example.com','351-2345678'),
-(3,'Rodríguez','Lucas','lucas.rodriguez@example.com','351-3456789'),
-(4,'Fernández','Ana','ana.fernandez@example.com','351-4567890'),
-(5,'Díaz','Carla','carla.diaz@example.com','351-5678901');
+(1,'Letona','Renzo','renzo.letona@example.com','351-1112233');
 
 CREATE TABLE reservas_sucursales (
     cod_reserva VARCHAR(50) PRIMARY KEY,
@@ -214,7 +221,7 @@ CREATE TABLE reservas_sucursales (
     fecha_reserva DATE NOT NULL,
     nro_restaurante INT NOT NULL,
     nro_sucursal INT NOT NULL,
-    cod_zona CHAR(5) NOT NULL,
+    cod_zona CHAR(15) NOT NULL,
     hora_reserva TIME NOT NULL,
     cant_adultos INT NOT NULL,
     cant_menores INT DEFAULT 0,
@@ -225,10 +232,6 @@ CREATE TABLE reservas_sucursales (
     FOREIGN KEY (nro_restaurante, nro_sucursal, cod_zona, hora_reserva)
         REFERENCES zonas_turnos_sucursales (nro_restaurante, nro_sucursal, cod_zona, hora_desde)
 );
-
--- INSERT INTO reservas_sucursales VALUES
--- ('LBP-001-R001','2025-11-02 18:30:00',1,'2025-11-05',1,1,'ACBA','12:00',2,0,12000.00,0,NULL),
--- ('LBP-001-R002','2025-11-02 18:45:00',2,'2025-11-05',1,1,'ACBA','20:00',4,2,18000.00,0,NULL);
 
 CREATE TABLE estilos (
     nro_estilo INT PRIMARY KEY,
