@@ -103,7 +103,7 @@ INSERT INTO sucursales VALUES
 (1,2,'La Bella Pizza General Paz','Jacinto Ríos',170,'General Paz',1,'5004','03515388931',30,12,2);
 
 CREATE TABLE zonas (
-    cod_zona CHAR(15) PRIMARY KEY,
+    cod_zona VARCHAR(15) PRIMARY KEY,
     nom_zona VARCHAR(100) NOT NULL
 );
 
@@ -116,7 +116,7 @@ INSERT INTO zonas (cod_zona, nom_zona) VALUES
 CREATE TABLE zonas_sucursales (
     nro_restaurante INT NOT NULL,
     nro_sucursal INT NOT NULL,
-    cod_zona CHAR(15) NOT NULL,
+    cod_zona VARCHAR(15) NOT NULL,
     cant_comensales INT NOT NULL,
     permite_menores INT NOT NULL,
     habilitada INT NOT NULL,
@@ -162,7 +162,7 @@ INSERT INTO turnos_sucursales VALUES
 CREATE TABLE zonas_turnos_sucursales (
     nro_restaurante INT NOT NULL,
     nro_sucursal INT NOT NULL,
-    cod_zona CHAR(15) NOT NULL,
+    cod_zona VARCHAR(15) NOT NULL,
     hora_desde TIME NOT NULL,
     permite_menores INT NOT NULL DEFAULT 1,
     PRIMARY KEY (nro_restaurante, nro_sucursal, cod_zona, hora_desde),
@@ -221,7 +221,7 @@ CREATE TABLE reservas_sucursales (
     fecha_reserva DATE NOT NULL,
     nro_restaurante INT NOT NULL,
     nro_sucursal INT NOT NULL,
-    cod_zona CHAR(15) NOT NULL,
+    cod_zona VARCHAR(15) NOT NULL,
     hora_reserva TIME NOT NULL,
     cant_adultos INT NOT NULL,
     cant_menores INT DEFAULT 0,
