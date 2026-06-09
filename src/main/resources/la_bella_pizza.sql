@@ -613,4 +613,7 @@ GO
 SELECT * from reservas_sucursales
 select * from clientes
 select * from contenidos
+
+
+
 select * from clicks_contenidos

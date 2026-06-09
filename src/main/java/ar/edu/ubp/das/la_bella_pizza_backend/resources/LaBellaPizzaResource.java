@@ -33,7 +33,7 @@ public class LaBellaPizzaResource {
   @PostMapping("/registrar_click_contenido")
   public ResponseEntity<String> registrarClickContenido(@RequestBody ClicksContenidosRestaurantesBean body) {
     laBellaPizzaRepository.registrarClickContenido(body);
-    return ResponseEntity.ok("ok");
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/contenidos/no-publicados")
@@ -49,7 +49,6 @@ public class LaBellaPizzaResource {
   @Transactional
   public ResponseEntity<Void> crearReservaSucursal(
       @RequestBody CrearReservaConClienteBean body) {
-
     // Insertar cliente (si no existe)
     laBellaPizzaRepository.insertarClienteDesdeRistorino(
         body.getCliente().getNroCliente(),
