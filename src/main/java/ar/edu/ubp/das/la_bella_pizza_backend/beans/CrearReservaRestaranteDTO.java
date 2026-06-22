@@ -3,7 +3,7 @@ package ar.edu.ubp.das.la_bella_pizza_backend.beans;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class CrearReservaSucursalBean {
+public class CrearReservaRestaranteDTO {
 
   private String codReserva;
   private Integer nroCliente;
@@ -16,7 +16,7 @@ public class CrearReservaSucursalBean {
   private Integer cantMenores;
   private Double costoReserva;
 
-  public CrearReservaSucursalBean() {
+  public CrearReservaRestaranteDTO() {
   }
 
   public String getCodReserva() {

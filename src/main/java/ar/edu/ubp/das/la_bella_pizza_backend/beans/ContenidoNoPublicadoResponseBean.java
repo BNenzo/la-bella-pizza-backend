@@ -2,7 +2,7 @@ package ar.edu.ubp.das.la_bella_pizza_backend.beans;
 
 import java.math.BigDecimal;
 
-public class ContenidoNoPublicadoBean {
+public class ContenidoNoPublicadoResponseBean {
 
   private int nroRestaurante;
   private int nroContenido;

@@ -2,7 +2,7 @@ package ar.edu.ubp.das.la_bella_pizza_backend.beans;
 
 import java.math.BigDecimal;
 
-public class ClicksContenidosRestaurantesBean {
+public class RegistarClicksContenidosRestaurantesRequestBean {
 
   private int nroRestaurante;
   private int nroContenido;
@@ -10,6 +10,46 @@ public class ClicksContenidosRestaurantesBean {
   private String fechaHoraRegistro;
   private Integer nroCliente;
   private BigDecimal costoClick;
+
+  private String apellido;
+
+  public String getApellido() {
+    return apellido;
+  }
+
+  public void setApellido(String apellido) {
+    this.apellido = apellido;
+  }
+
+  private String nombre;
+
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  private String correo;
+
+  public String getCorreo() {
+    return correo;
+  }
+
+  public void setCorreo(String correo) {
+    this.correo = correo;
+  }
+
+  private String telefonos;
+
+  public String getTelefonos() {
+    return telefonos;
+  }
+
+  public void setTelefonos(String telefonos) {
+    this.telefonos = telefonos;
+  }
 
   public int getNroRestaurante() {
     return nroRestaurante;

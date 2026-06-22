@@ -1,6 +1,6 @@
 package ar.edu.ubp.das.la_bella_pizza_backend.beans;
 
-public class ClienteRestauranteBean {
+public class CrearReservaClienteDTO {
 
   private Integer nroCliente;
   private String apellido;
@@ -8,7 +8,7 @@ public class ClienteRestauranteBean {
   private String correo;
   private String telefonos;
 
-  public ClienteRestauranteBean() {
+  public CrearReservaClienteDTO() {
   }
 
   public Integer getNroCliente() {

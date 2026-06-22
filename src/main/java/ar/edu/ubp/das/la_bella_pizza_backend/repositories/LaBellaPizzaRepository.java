@@ -10,10 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ar.edu.ubp.das.la_bella_pizza_backend.beans.ActualizarContenidosNoPublicadosBean;
-import ar.edu.ubp.das.la_bella_pizza_backend.beans.ActualizarReservaClienteRequestBean;
-import ar.edu.ubp.das.la_bella_pizza_backend.beans.ClicksContenidosRestaurantesBean;
-import ar.edu.ubp.das.la_bella_pizza_backend.beans.ContenidoNoPublicadoBean;
+
+import ar.edu.ubp.das.la_bella_pizza_backend.beans.ActualizarContenidosNoPublicadosRequestBean;
+import ar.edu.ubp.das.la_bella_pizza_backend.beans.RegistarClicksContenidosRestaurantesRequestBean;
+import ar.edu.ubp.das.la_bella_pizza_backend.beans.ContenidoNoPublicadoResponseBean;
+import ar.edu.ubp.das.la_bella_pizza_backend.beans.ObtenerDisponibilidadHorariaZonaResponseBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.components.SimpleJdbcCallFactory;
 
 @Repository
@@ -25,7 +26,7 @@ public class LaBellaPizzaRepository {
   // ===============================
   // REGISTRAR CLICK CONTENIDO
   // ===============================
-  public void registrarClickContenido(ClicksContenidosRestaurantesBean body) {
+  public void registrarClickContenido(RegistarClicksContenidosRestaurantesRequestBean body) {
     MapSqlParameterSource p = new MapSqlParameterSource()
         .addValue("nro_restaurante", body.getNroRestaurante())
         .addValue("nro_contenido", body.getNroContenido())
@@ -40,7 +41,7 @@ public class LaBellaPizzaRepository {
   // ===============================
   // OBTENER CONTENIDOS NO PUBLICADOS
   // ===============================
-  public List<ContenidoNoPublicadoBean> getContenidosNoPublicados() {
+  public List<ContenidoNoPublicadoResponseBean> getContenidosNoPublicados() {
     MapSqlParameterSource p = new MapSqlParameterSource();
 
     return jdbcCallFactory.executeQuery(
@@ -48,7 +49,7 @@ public class LaBellaPizzaRepository {
         "dbo",
         p,
         "contenidos_no_publicados",
-        ContenidoNoPublicadoBean.class);
+        ContenidoNoPublicadoResponseBean.class);
   }
 
   // ===============================
@@ -107,26 +108,8 @@ public class LaBellaPizzaRepository {
         p);
   }
 
-  // ACTUALIZAR LA RESERVA DE UN CLIENTE
-  public void actualizarReservaCliente(ActualizarReservaClienteRequestBean request) {
-    System.out.println(request.getCodReservaSucursal());
-    MapSqlParameterSource params = new MapSqlParameterSource()
-        .addValue("cod_reserva", request.getCodReservaSucursal())
-        .addValue("cant_adultos", request.getCantAdultos())
-        .addValue("cant_menores", request.getCantMenores())
-        .addValue("fecha_reserva", request.getFechaReserva())
-        .addValue("hora_reserva", request.getHoraReserva())
-        .addValue("fecha_cancelacion", request.getFechaCancelacion())
-        .addValue("cancelada", request.getFechaCancelacion() != null ? 1 : null);
-
-    jdbcCallFactory.executeWithOutputs(
-        "sp_actualizar_reserva_cliente",
-        "dbo",
-        params);
-  }
-
   // ACTUALIZAR LOS CONTENIDOS NO PUBLICADOS A PUBLICADOS
-  public void actualizarContenidoNoPublicadosAPublicados(ActualizarContenidosNoPublicadosBean request)
+  public void actualizarContenidoNoPublicadosAPublicados(ActualizarContenidosNoPublicadosRequestBean request)
       throws JsonProcessingException {
     ObjectMapper om = new ObjectMapper();
     String json = om.writeValueAsString(request.getContenidos());
@@ -139,4 +122,23 @@ public class LaBellaPizzaRepository {
         "dbo",
         params);
   }
+
+  public List<ObtenerDisponibilidadHorariaZonaResponseBean> obtenerDisponibilidadHorariaZona(
+      Integer nroSucursal,
+      String codZona,
+      LocalDate fechaAReservar) {
+
+    MapSqlParameterSource params = new MapSqlParameterSource()
+        .addValue("nro_sucursal", nroSucursal)
+        .addValue("fecha_reserva", fechaAReservar)
+        .addValue("cod_zona", codZona);
+
+    return jdbcCallFactory.executeQuery(
+        "sp_obtener_disponibilidad_por_zona",
+        "dbo",
+        params,
+        "disponibilidad_horarios",
+        ObtenerDisponibilidadHorariaZonaResponseBean.class);
+  }
+
 }

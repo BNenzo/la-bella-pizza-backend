@@ -355,7 +355,7 @@ CREATE TABLE clicks_contenidos (
     nro_contenido INT NOT NULL,
     nro_click INT NOT NULL,
     fecha_hora_registro DATETIME NOT NULL,
-    nro_cliente INT NOT NULL,
+    nro_cliente INT,
     costo_click DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (nro_restaurante, nro_contenido, nro_click),
     FOREIGN KEY (nro_restaurante, nro_contenido)
@@ -608,6 +608,69 @@ BEGIN
 END
 GO
 
+CREATE OR ALTER PROCEDURE dbo.sp_obtener_disponibilidad_por_zona
+    @nro_sucursal  INT,
+    @fecha_reserva DATE,
+    @cod_zona      VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        zts.nro_restaurante,
+        zts.nro_sucursal,
+        zts.cod_zona,
+        zs.cant_comensales,
+        zs.permite_menores,
+        zts.hora_desde,
+        ts.hora_hasta,
+        ts.habilitado,
+
+        ISNULL(SUM(rs.cant_adultos + rs.cant_menores), 0)       AS cantidad_reservada,
+        zs.cant_comensales
+            - ISNULL(SUM(rs.cant_adultos + rs.cant_menores), 0) AS cupo_disponible
+
+    FROM dbo.zonas_turnos_sucursales    AS zts
+
+    INNER JOIN dbo.zonas_sucursales     AS zs
+        ON  zs.nro_restaurante = zts.nro_restaurante
+        AND zs.nro_sucursal    = zts.nro_sucursal
+        AND zs.cod_zona        = zts.cod_zona
+
+    INNER JOIN dbo.turnos_sucursales    AS ts
+        ON  ts.nro_restaurante = zts.nro_restaurante
+        AND ts.nro_sucursal    = zts.nro_sucursal
+        AND ts.hora_desde      = zts.hora_desde
+
+    LEFT JOIN dbo.reservas_sucursales   AS rs
+        ON  rs.nro_restaurante = zts.nro_restaurante
+        AND rs.nro_sucursal    = zts.nro_sucursal
+        AND rs.cod_zona        = zts.cod_zona
+        AND rs.hora_reserva    = zts.hora_desde
+        AND rs.fecha_reserva   = @fecha_reserva
+        AND rs.cancelada       = 0              
+
+    WHERE
+        zts.nro_sucursal = @nro_sucursal
+        AND zts.cod_zona = @cod_zona
+        AND ts.habilitado = 1
+        AND zs.habilitada = 1
+
+    GROUP BY
+        zts.nro_restaurante,
+        zts.nro_sucursal,
+        zts.cod_zona,
+        zs.cant_comensales,
+        zs.permite_menores,
+        zts.hora_desde,
+        ts.hora_hasta,
+        ts.habilitado
+
+    ORDER BY
+        zts.hora_desde;
+END
+GO
+
 
 
 SELECT * from reservas_sucursales
@@ -617,3 +680,4 @@ select * from contenidos
 
 
 select * from clicks_contenidos
+
