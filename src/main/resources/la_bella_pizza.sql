@@ -204,15 +204,15 @@ INSERT INTO zonas_turnos_sucursales VALUES
 
 
 CREATE TABLE clientes (
-    nro_cliente INT PRIMARY KEY,
+    nro_cliente INT PRIMARY KEY IDENTITY(1,1),
     apellido VARCHAR(100) NOT NULL,
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(150) UNIQUE NOT NULL,
     telefonos VARCHAR(50)
 );
 
-INSERT INTO clientes VALUES
-(1,'Letona','Renzo','renzo.letona@example.com','351-1112233');
+INSERT INTO clientes (apellido, nombre, correo, telefonos) VALUES
+('Letona','Renzo','renzo.letona@example.com','351-1112233');
 
 CREATE TABLE reservas_sucursales (
     cod_reserva VARCHAR(50) PRIMARY KEY,
@@ -339,6 +339,7 @@ CREATE TABLE contenidos (
     publicado INT NOT NULL DEFAULT 0,
     costo_click DECIMAL(10,2) NOT NULL DEFAULT 0,
     nro_sucursal INT,
+    cod_contenido_restaurante VARCHAR(255), -- {PREFIJO - {nroRestaurante} - {nroSucursal} - {nroContenido}}
     PRIMARY KEY (nro_restaurante, nro_contenido),
     FOREIGN KEY (nro_restaurante) REFERENCES restaurantes (nro_restaurante),
     FOREIGN KEY (nro_restaurante, nro_sucursal)
@@ -346,9 +347,9 @@ CREATE TABLE contenidos (
 );
 
 INSERT INTO contenidos VALUES
-(1,1,'Promo mediodía: Pizza a la piedra + bebida','https://tn.com.ar/resizer/z2Dke2M5Hbz4s3VRE_OClr_-fXU=/arc-anglerfish-arc2-prod-artear/public/FOTWE3GMANB6BPQKQB4GER55MM.jpeg',0,15.00,1),
-(1,2,'Noche de pizzas a la piedra 2x1','https://www.paulinacocina.net/wp-content/uploads/2024/05/receta-de-pizza-frita-paulina-cocina-recetas-800x450.jpg',0,12.50,1),
-(1,3,'Degustacion de pizzas en sucursal Alta Cba','https://external-preview.redd.it/dominos-50-off-pizza-deal-returns-april-21-27-2025-v0-fmRa26hiSj0oi3Ob8jddYxIJCAft4z0H26lGC1J9KvE.jpg?width=640&crop=smart&auto=webp&s=34ace06ed3c90f079c718796a0ce7496ea4f5f32',0,10.00,2);
+(1,1,'Promo mediodía: Pizza a la piedra + bebida','https://tn.com.ar/resizer/z2Dke2M5Hbz4s3VRE_OClr_-fXU=/arc-anglerfish-arc2-prod-artear/public/FOTWE3GMANB6BPQKQB4GER55MM.jpeg',0,15.00,1, 'LBP-1-1-1'),
+(1,2,'Noche de pizzas a la piedra 2x1','https://www.paulinacocina.net/wp-content/uploads/2024/05/receta-de-pizza-frita-paulina-cocina-recetas-800x450.jpg',0,12.50,1, 'LBP-1-1-2'),
+(1,3,'Degustacion de pizzas en sucursal Alta Cba','https://external-preview.redd.it/dominos-50-off-pizza-deal-returns-april-21-27-2025-v0-fmRa26hiSj0oi3Ob8jddYxIJCAft4z0H26lGC1J9KvE.jpg?width=640&crop=smart&auto=webp&s=34ace06ed3c90f079c718796a0ce7496ea4f5f32',0,10.00,2, 'LBP-1-2-3');
 
 CREATE TABLE clicks_contenidos (
     nro_restaurante INT NOT NULL,
@@ -385,15 +386,26 @@ IF OBJECT_ID('dbo.sp_insert_click_contenido', 'P') IS NOT NULL
 GO
 
 CREATE OR ALTER PROCEDURE dbo.sp_insert_click_contenido
-    @nro_restaurante     INT,
-    @nro_contenido       INT,
-    @nro_click           INT,
-    @fecha_hora_registro DATETIME,
-    @nro_cliente         INT,
-    @costo_click         DECIMAL(10,2)
+    @cod_contenido_restaurante VARCHAR(255),
+    @nro_contenido             INT,
+    @nro_click                 INT,
+    @fecha_hora_registro       DATETIME,
+    @nro_cliente               INT,
+    @costo_click               DECIMAL(10,2)
 AS
 BEGIN
     SET NOCOUNT ON;
+
+    DECLARE @nro_restaurante INT;
+
+    SELECT @nro_restaurante = nro_restaurante
+    FROM dbo.contenidos
+    WHERE cod_contenido_restaurante = @cod_contenido_restaurante;
+
+    IF @nro_restaurante IS NULL
+    BEGIN
+        ;THROW 50001, 'No se encontro el restaurante para el cod_contenido_restaurante indicado.', 1;
+    END
 
     BEGIN TRY
         BEGIN TRAN;
@@ -438,16 +450,16 @@ BEGIN
         imagen_a_publicar,
         publicado,
         costo_click,
-        nro_sucursal
+        nro_sucursal,
+        cod_contenido_restaurante
     FROM contenidos
     WHERE publicado = 0;
 END
 GO
 
 
--- INSERT CLIENTE DESDE RISTORINO SOLO SI NO EXISTE
+-- INSERT CLIENTE DESDE RISTORINO SOLO SI NO EXISTE, RETORNA nro_cliente
 CREATE OR ALTER PROCEDURE sp_insert_cliente_desde_ristorino
-  @nro_cliente INT,
   @apellido VARCHAR(100),
   @nombre VARCHAR(100),
   @correo VARCHAR(150),
@@ -459,24 +471,26 @@ BEGIN
   IF NOT EXISTS (
     SELECT 1
     FROM clientes
-    WHERE nro_cliente = @nro_cliente
+    WHERE correo = @correo
   )
   BEGIN
     INSERT INTO clientes (
-      nro_cliente,
       apellido,
       nombre,
       correo,
       telefonos
     )
     VALUES (
-      @nro_cliente,
       @apellido,
       @nombre,
       @correo,
       @telefonos
     );
   END
+
+  SELECT nro_cliente
+  FROM clientes
+  WHERE correo = @correo;
 END;
 GO
 

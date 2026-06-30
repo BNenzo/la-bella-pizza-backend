@@ -11,6 +11,15 @@ public class ContenidoNoPublicadoResponseBean {
   private int publicado;
   private BigDecimal costoClick;
   private Integer nroSucursal;
+  private String codContenidoRestaurante;
+
+  public String getCodContenidoRestaurante() {
+    return codContenidoRestaurante;
+  }
+
+  public void setCodContenidoRestaurante(String codContenidoRestaurante) {
+    this.codContenidoRestaurante = codContenidoRestaurante;
+  }
 
   public int getNroRestaurante() {
     return nroRestaurante;

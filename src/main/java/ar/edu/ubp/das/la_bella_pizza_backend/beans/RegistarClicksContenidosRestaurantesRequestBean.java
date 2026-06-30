@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class RegistarClicksContenidosRestaurantesRequestBean {
 
-  private int nroRestaurante;
+  private String codContenidoRestaurante;
   private int nroContenido;
   private int nroClick;
   private String fechaHoraRegistro;
@@ -12,6 +12,14 @@ public class RegistarClicksContenidosRestaurantesRequestBean {
   private BigDecimal costoClick;
 
   private String apellido;
+
+  public String getCodContenidoRestaurante() {
+    return codContenidoRestaurante;
+  }
+
+  public void setCodContenidoRestaurante(String codContenidoRestaurante) {
+    this.codContenidoRestaurante = codContenidoRestaurante;
+  }
 
   public String getApellido() {
     return apellido;
@@ -49,14 +57,6 @@ public class RegistarClicksContenidosRestaurantesRequestBean {
 
   public void setTelefonos(String telefonos) {
     this.telefonos = telefonos;
-  }
-
-  public int getNroRestaurante() {
-    return nroRestaurante;
-  }
-
-  public void setNroRestaurante(int nroRestaurante) {
-    this.nroRestaurante = nroRestaurante;
   }
 
   public int getNroContenido() {
@@ -102,7 +102,7 @@ public class RegistarClicksContenidosRestaurantesRequestBean {
   @Override
   public String toString() {
     return "ClickContenidoRestaurante{" +
-        "nroRestaurante=" + nroRestaurante +
+        "codContenidoRestaurante=" + codContenidoRestaurante +
         ", nroContenido=" + nroContenido +
         ", nroClick=" + nroClick +
         ", fechaHoraRegistro=" + fechaHoraRegistro +

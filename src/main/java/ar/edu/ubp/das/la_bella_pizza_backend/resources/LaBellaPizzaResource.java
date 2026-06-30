@@ -35,13 +35,14 @@ public class LaBellaPizzaResource {
   @PostMapping("/registrar_click_contenido")
   public ResponseEntity<String> registrarClickContenido(
       @RequestBody RegistarClicksContenidosRestaurantesRequestBean body) {
-    if (body.getNroCliente() != null) {
-      laBellaPizzaRepository.insertarClienteDesdeRistorino(
-          body.getNroCliente(),
+    if (body.getNroCliente() != null) { // Cambiar
+      Integer nroCliente = laBellaPizzaRepository.insertarClienteDesdeRistorino(
           body.getApellido(),
           body.getNombre(),
           body.getCorreo(),
           body.getTelefonos());
+
+      body.setNroCliente(nroCliente);
     }
 
     laBellaPizzaRepository.registrarClickContenido(body);
@@ -95,7 +96,6 @@ public class LaBellaPizzaResource {
 
     // Insertar cliente (si no existe)
     laBellaPizzaRepository.insertarClienteDesdeRistorino(
-        body.getCliente().getNroCliente(),
         body.getCliente().getApellido(),
         body.getCliente().getNombre(),
         body.getCliente().getCorreo(),

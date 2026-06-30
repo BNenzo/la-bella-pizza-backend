@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.ActualizarContenidosNoPublicadosRequestBean;
+import ar.edu.ubp.das.la_bella_pizza_backend.beans.ClienteResponseBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.RegistarClicksContenidosRestaurantesRequestBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.ContenidoNoPublicadoResponseBean;
 import ar.edu.ubp.das.la_bella_pizza_backend.beans.ObtenerDisponibilidadHorariaZonaResponseBean;
@@ -28,7 +29,7 @@ public class LaBellaPizzaRepository {
   // ===============================
   public void registrarClickContenido(RegistarClicksContenidosRestaurantesRequestBean body) {
     MapSqlParameterSource p = new MapSqlParameterSource()
-        .addValue("nro_restaurante", body.getNroRestaurante())
+        .addValue("cod_contenido_restaurante", body.getCodContenidoRestaurante())
         .addValue("nro_contenido", body.getNroContenido())
         .addValue("nro_click", body.getNroClick())
         .addValue("fecha_hora_registro", body.getFechaHoraRegistro())
@@ -55,24 +56,26 @@ public class LaBellaPizzaRepository {
   // ===============================
   // INSERT CLIENTE DESDE RISTORINO
   // ===============================
-  public void insertarClienteDesdeRistorino(
-      Integer nroCliente,
+  public Integer insertarClienteDesdeRistorino(
       String apellido,
       String nombre,
       String correo,
       String telefonos) {
 
     MapSqlParameterSource p = new MapSqlParameterSource()
-        .addValue("nro_cliente", nroCliente)
         .addValue("apellido", apellido)
         .addValue("nombre", nombre)
         .addValue("correo", correo)
         .addValue("telefonos", telefonos);
 
-    jdbcCallFactory.execute(
+    List<ClienteResponseBean> result = jdbcCallFactory.executeQuery(
         "sp_insert_cliente_desde_ristorino",
         "dbo",
-        p);
+        p,
+        "cliente",
+        ClienteResponseBean.class);
+
+    return result.get(0).getNroCliente();
   }
 
   // ===============================
