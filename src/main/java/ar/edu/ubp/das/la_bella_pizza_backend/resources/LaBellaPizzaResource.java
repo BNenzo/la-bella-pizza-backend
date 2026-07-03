@@ -76,26 +76,26 @@ public class LaBellaPizzaResource {
 
     if (opt.isEmpty()) {
       // no existe turno para esa hora
-      throw new RuntimeException("No hay turno para la hora solicitada");
+      throw new RuntimeException("RESERVA_TURNO_INEXISTENTE");
     }
 
     ObtenerDisponibilidadHorariaZonaResponseBean turno = opt.get();
 
     // Validaciones sobre el encontrado
     if (turno.getHabilitado() != null && turno.getHabilitado() == 0) {
-      throw new RuntimeException("El turno no está habilitado");
+      throw new RuntimeException("RESERVA_TURNO_NO_HABILITADO");
     }
     if (turno.getCupoDisponible() == null || turno.getCupoDisponible() <= 0) {
-      throw new RuntimeException("No hay cupo disponible");
+      throw new RuntimeException("RESERVA_SIN_CUPO");
     }
     if (turno.getCupoDisponible() < body.getReserva().getCantAdultos() + body.getReserva().getCantMenores()) {
-      throw new RuntimeException("No hay cupo disponible para la cantidad de comensales solicitada");
+      throw new RuntimeException("RESERVA_CUPO_INSUFICIENTE");
     }
 
     String codReservaSucursal = Utils.generarCodigoReserva();
 
     // Insertar cliente (si no existe)
-    laBellaPizzaRepository.insertarClienteDesdeRistorino(
+    Integer nroCliente = laBellaPizzaRepository.insertarClienteDesdeRistorino(
         body.getCliente().getApellido(),
         body.getCliente().getNombre(),
         body.getCliente().getCorreo(),
@@ -104,9 +104,8 @@ public class LaBellaPizzaResource {
     // Insertar reserva
     laBellaPizzaRepository.crearReservaSucursal(
         codReservaSucursal,
-        body.getReserva().getNroCliente(),
+        nroCliente,
         body.getReserva().getFechaReserva(),
-        body.getReserva().getNroRestaurante(),
         body.getReserva().getNroSucursal(),
         body.getReserva().getCodZona(),
         body.getReserva().getHoraReserva(),
