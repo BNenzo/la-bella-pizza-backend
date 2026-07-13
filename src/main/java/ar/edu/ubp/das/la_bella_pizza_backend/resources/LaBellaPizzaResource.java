@@ -2,6 +2,7 @@ package ar.edu.ubp.das.la_bella_pizza_backend.resources;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class LaBellaPizzaResource {
   // ===============================
   @PostMapping("/reservas")
   @Transactional
-  public ResponseEntity<String> crearReservaSucursal(
+  public ResponseEntity<Map<String, Object>> crearReservaSucursal(
       @RequestBody CrearReservaConClienteRequestDTO body) {
 
     List<ObtenerDisponibilidadHorariaZonaResponseBean> horariosPorZona = laBellaPizzaRepository
@@ -113,7 +114,8 @@ public class LaBellaPizzaResource {
         body.getReserva().getCantMenores(),
         body.getReserva().getCostoReserva());
 
-    return ResponseEntity.ok(codReservaSucursal);
+    return ResponseEntity.ok(Map.of(
+        "codReservaSucursal", codReservaSucursal));
   }
 
   // ACTUALIZAR LOS CONTENIDOS NO PUBLICADOS A PUBLICADOS
