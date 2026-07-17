@@ -211,8 +211,6 @@ CREATE TABLE clientes (
     telefonos VARCHAR(50)
 );
 
-INSERT INTO clientes (apellido, nombre, correo, telefonos) VALUES
-('Letona','Renzo','renzo.letona@example.com','351-1112233');
 
 CREATE TABLE reservas_sucursales (
     cod_reserva VARCHAR(50) PRIMARY KEY,
